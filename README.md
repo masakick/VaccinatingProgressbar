@@ -14,4 +14,4 @@ To draw the progress bar, sketch.js requests "[vaccinations.json](https://github
 
 ## License
 
-[MIT License](./LICENSE.txt)
+[MIT License](./LICENSE)
