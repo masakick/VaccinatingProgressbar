@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-194823079-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-194823079-1');
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>このデータについて｜ワクチン接種プログレスバー</title>
+    <style>
+    body {
+      margin: 1em;
+      padding: 1em;
+    }
+    </style>
+
+  </head>
+  <body>
+    <h1>このデータについて</h1>
+    <p>ワクチン接種状況をp5.jsでプログレスバー風に表示しました。元データにアップデートがあればリロードすると更新されます。情報の正確性、動作については非保証ですのでクレームはご容赦を。この分析に関しての記事を書きました。→<a href="https://note.com/masakick/n/n4c4b71f083b7">「現在、私たちが並んでいる途方もなく長いワクチン待ちの行列について」</a></p>
+    <p>データソースは、<a href="https://ourworldindata.org/covid-vaccinations">our world in data</a>のレポジトリにある<a href="https://github.com/owid/covid-19-data/tree/master/public/data/vaccinations">vaccinations.json</a>をロードしています。</p><p>製作者：<a href="https://masakiyamabe.com/">山辺真幸</a>　<a href="https://bit.ly/2Q8aaCB">Twitter</a></p>
+    <hr>
+    <p><strong>各表示項目について</strong></p>
+    <ul>
+      <li><strong>進捗率（完了までの%）</strong>：2回目の接種を終えた人数を示す「people_fully_vaccinated」を総人口で割った数値を表示しています。全人口に接種は必要ないだろうというツッコミはあり得ます。総人口の参照先データは<a href="https://github.com/owid/covid-19-data/blob/master/scripts/input/un/population_2020.csv">こちら</a></li>
+      <li><strong>Speed</strong>：「daily_vaccinations」を表示しています。これは、過去７日間の接種回数の移動平均に近い値だそうですが、詳しくはOWIDの<a href="https://github.com/owid/covid-19-data/tree/master/public/data/vaccinations">ページ</a>を参照してください。</li>
+      <li><strong>Speed(対人口比)</strong>：「daily_vaccinations_per_millions」を表示しています。これは人口100万人あたり1日に何回接種できたかを表します。総人口が多い国は接種できる医療者も多く接種回数も多いですから、人口差を考慮して多国間の速度を比べるのに役立つかと思います。詳しくはOWIDの<a href="https://github.com/owid/covid-19-data/tree/master/public/data/vaccinations">ページ</a>を参照してください。</li>
+      <li><strong>完了までの残り日数</strong>：完了とする回数を「総人口の2倍」と仮定した場合（実際そんな回数は必要ないと思いますが）、その値から、接種済回数である「total_vaccinations」を引き、残りを前述の「daily_vaccinations」で割って表示しています。
+    </ul>
+    <hr>
+    <p><strong>バリエーション</strong></p>
+    <p>アジア</p>
+    <ul>
+      <li><a href="/">日本</a></li>
+      <li><a href="ISR.html">イスラエル</a></li>
+      <li><a href="SGP.html">シンガポール</a></li>
+      <li><a href="KOR.html">韓国</a></li>
+      <li><a href="IND.html">インド</a></li>
+    </ul>
+    <p>ヨーロッパ</p>
+    <ul>
+      <li><a href="GBR.html">イギリス</a></li>
+      <li><a href="FRA.html">フランス</a></li>
+      <li><a href="DEU.html">ドイツ</a></li>
+      <li><a href="RUS.html">ロシア</a></li>
+      <li><a href="HUN.html">ハンガリー</a></li>
+    </ul>
+    <p>北米</p>
+    <ul>
+      <li><a href="USA.html">アメリカ</a></li>
+    </ul>
+    <p>南米</p>
+    <ul>
+      <li><a href="BRA.html">ブラジル</a></li>
+    </ul>
+
+    <hr>
+    <p><strong>更新履歴</strong></p>
+    <ul>
+      <li>2021/04/19:p5.js editorからvacprogressbar.comに移設</li>
+      <li>2021/04/13:「speed(対人口比）」表示を追加。シンガポール、韓国、インド、フランス、ドイツ、ロシア、ハンガリー、アメリカ、ブラジル追加</li>
+      <li>2021/04/08:作成</li>
+    </ul>
+  </body>
+</html>
