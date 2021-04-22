@@ -146,10 +146,10 @@ function drawProgressbar(){
   textSize(16);
   text("Vaccinating "+country+"... " + percentage +"% 完了", width/10, height/2-41);
   textSize(12);
-  text( "("+ latest_value.people_fully_vaccinated.value +" / " + population+")", width/10, height/2-22 )
+  text( "(2回目接種済: "+ latest_value.people_fully_vaccinated.value +"人/ " + population+"人)", width/10, height/2-22 )
 
 
-  text("Speed: " + speed + "回/日  (対人口比 "+speed_per_million+"回/日,100万人)", width/10, height/2+30);
+  text("直近7日平均速度: " + speed + "回/日  (対人口比 "+speed_per_million+"回/日,100万人)", width/10, height/2+30);
   text("完了まで残り  " + remainingDays + "日", width/10, height/2+50);
 
   textSize(12);
