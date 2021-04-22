@@ -42,3 +42,11 @@ select{
   border-right:#333 2px solid;
   transform:rotate(45deg)translateY(-30%);
 }
+
+div.shareButton{
+  text-align: center;
+}
+div.shareButton>div{
+  display:inline-block;
+  margin: 10px;
+}

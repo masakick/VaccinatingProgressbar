@@ -17,6 +17,7 @@ let speed_per_million;
 let canvas_height_ratio = 0.5;
 let error_code = 0;
 let ui_select;
+let ui_shareButton;
 let sel;
 
 function setup() {
@@ -25,6 +26,7 @@ function setup() {
   createCanvas(window.innerWidth, windowHeight*canvas_height_ratio);
   requestPopulation();
   uiCreateSelect();
+  uiCreateShareButton(); //not required
 
 }
 function requestPopulation(){
@@ -195,4 +197,13 @@ function uiCreateSelect(){
 
 function uiChangeSelect(){
   location.href=sel.value();
+}
+
+function uiCreateShareButton(){
+  ui_shareButton = createDiv('');
+  ui_shareButton.addClass('shareButton');
+  let shareButtonLine = createDiv('<div class="line-it-button" data-lang="ja" data-type="share-a" data-ver="3" data-url="'+location.href+'" data-color="default" data-size="small" data-count="false" style="display: none;"></div>');
+  let shareButtonTwitter = createDiv('<div><a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text=" " data-hashtags="ワクチン接種プログレスバー">Tweet</a></div>');
+  ui_shareButton.child(shareButtonLine);
+  ui_shareButton.child(shareButtonTwitter);
 }
