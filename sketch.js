@@ -8,6 +8,12 @@ let total_vaccination_history;
 let people_fully_vaccinated_history;
 let daily_vaccination_history;
 let daily_vaccinations_per_million_history;
+let daily_vaccinations_raw_history;
+let daily_vaccinations_raw_history_sorted;
+let daily_vaccinations_raw_history_exceptmonday;
+let daily_vaccinations_raw_history_exceptmonday_sorted;
+let daily_vaccinations_raw_max;
+let daily_vaccinations_raw_max_exceptmonday;
 let latest_value;
 let last_update;
 let progress;
@@ -19,15 +25,14 @@ let error_code = 0;
 let ui_select;
 let ui_shareButton;
 let sel;
+let day_jp = [ "日", "月", "火", "水", "木", "金", "土" ] ;
 
 function setup() {
   country = pb_country;
   country_code = pb_country_code;
   createCanvas(window.innerWidth, windowHeight*canvas_height_ratio);
   requestPopulation();
-  uiCreateSelect();
   uiCreateShareButton(); //not required
-
 }
 function requestPopulation(){
   let url_population = 'https://raw.githubusercontent.com/owid/covid-19-data/master/scripts/input/un/population_2020.csv';
@@ -69,6 +74,29 @@ function gotData(data) {
   });
   daily_vaccination_latest = daily_vaccination_history[daily_vaccination_history.length-1];
 
+  daily_vaccinations_raw_history = country_data.filter(function(item, index){
+    if(item.daily_vaccinations_raw) return true;
+  });
+
+  daily_vaccinations_raw_history_sorted = daily_vaccinations_raw_history.slice();
+  daily_vaccinations_raw_history_sorted.sort(compare_daily_vaccinations_raw);
+  daily_vaccinations_raw_max = daily_vaccinations_raw_history_sorted[0];
+  console.log(daily_vaccinations_raw_max);
+
+  //remove Monday
+  daily_vaccinations_raw_history_exceptmonday = country_data.filter(function(item, index){
+    if(item.daily_vaccinations_raw){
+      let date = new Date(item.date);
+      if( date.getDay() != 1){
+        return true;
+      }
+    }
+  });
+
+  daily_vaccinations_raw_history_exceptmonday_sorted = daily_vaccinations_raw_history_exceptmonday.slice();
+  daily_vaccinations_raw_history_exceptmonday_sorted.sort(compare_daily_vaccinations_raw);
+  daily_vaccinations_raw_max_exceptmonday = daily_vaccinations_raw_history_exceptmonday_sorted[0];
+
   daily_vaccinations_per_million_history = country_data.filter(function(item, index){
     if(item.daily_vaccinations_per_million) return true;
   });
@@ -106,6 +134,7 @@ function gotData(data) {
   speed_per_million = latest_value.daily_vaccinations_per_million.value;
 
   is_parsed = true;
+  createUI();
 
 }
 
@@ -158,6 +187,8 @@ function drawProgressbar(){
   fill(32);
   textAlign(CENTER);
   text("last update:"+ last_update, width/2, height/2+100);
+
+
 }
 
 function uiCreateSelect(){
@@ -206,4 +237,54 @@ function uiCreateShareButton(){
   let shareButtonTwitter = createDiv('<div><a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text=" " data-hashtags="ワクチン接種プログレスバー">Tweet</a></div>');
   ui_shareButton.child(shareButtonLine);
   ui_shareButton.child(shareButtonTwitter);
+}
+
+function uiCreateMaxValue(){
+  let date_ex = daily_vaccinations_raw_max_exceptmonday.date;
+  let value_ex = daily_vaccinations_raw_max_exceptmonday.daily_vaccinations_raw;
+  let day_ex = day_jp[( new Date(date_ex) ).getDay()];
+
+  let date = daily_vaccinations_raw_max.date;
+  let value = daily_vaccinations_raw_max.daily_vaccinations_raw;
+  let day = day_jp[( new Date(date) ).getDay()];
+
+
+  let ui_maxValue = createDiv('<p><strong>最多接種記録</strong><br/>(月曜除く) '+date_ex+'('+day_ex+') '+ value_ex+'回<br/>(月曜含む) '+date+'('+day+') '+ value+'回<p>');
+  ui_maxValue.addClass('max-value');
+}
+
+function uiCreateLatestTable(){
+  let ui_latestTableDiv = createDiv('<p><strong>最近の接種履歴</strong><br/>');
+  ui_latestTableDiv.addClass('latest-table');
+  let ui_table = createElement('table');
+  let limit = (daily_vaccinations_raw_history.length<=7)? daily_vaccinations_raw_history.length : 7;
+  for(let i=0; i<limit; i++){
+    let obj = daily_vaccinations_raw_history[daily_vaccinations_raw_history.length-1-i];
+    let date = obj.date;
+    let day = day_jp[( new Date(date) ).getDay()];
+    let value = obj.daily_vaccinations_raw
+    let row = createElement('tr','<td>'+date+'('+day+')</td><td>'+value+'回</td>');
+    ui_table.child(row);
+  }
+  ui_latestTableDiv.child(ui_table);
+}
+
+function createUI(){
+  uiCreateMaxValue();
+  uiCreateLatestTable();
+  uiCreateSelect();
+}
+
+
+function compare_daily_vaccinations_raw(a, b) {
+  const valA = a.daily_vaccinations_raw;
+  const valB = b.daily_vaccinations_raw;
+
+  let comparison = 0;
+  if (valA < valB) {
+    comparison = 1;
+  } else if (valA > valB) {
+    comparison = -1;
+  }
+  return comparison;
 }

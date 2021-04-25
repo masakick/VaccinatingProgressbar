@@ -50,3 +50,17 @@ div.shareButton>div{
   display:inline-block;
   margin: 10px;
 }
+
+div.latest-table table{
+  margin-left: auto;
+  margin-right: auto;
+  font-size: small;
+  border: 1px solid #ccc;
+  border-collapse:separate;
+  border-spacing: 0;
+}
+div.latest-table table td{
+  border: 1px solid #ccc;
+  padding: 0.2em 1em;
+  text-align: right;
+}
