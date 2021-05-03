@@ -81,7 +81,6 @@ function gotData(data) {
   daily_vaccinations_raw_history_sorted = daily_vaccinations_raw_history.slice();
   daily_vaccinations_raw_history_sorted.sort(compare_daily_vaccinations_raw);
   daily_vaccinations_raw_max = daily_vaccinations_raw_history_sorted[0];
-  console.log(daily_vaccinations_raw_max);
 
   //remove Monday
   daily_vaccinations_raw_history_exceptmonday = country_data.filter(function(item, index){
@@ -269,10 +268,15 @@ function uiCreateLatestTable(){
   ui_latestTableDiv.child(ui_table);
 }
 
+function uiCriateRelatedLink(){
+  let ui_relatedLink = createDiv('<p><strong>開発者の記事</strong><br/><p><a href="https://note.com/masakick/n/ne3062ef18274" target="_blank">長いワクチン待ちの行列はどのように消化されていくのかについて</a></p>');
+}
+
 function createUI(){
   uiCreateMaxValue();
   uiCreateLatestTable();
   uiCreateSelect();
+  uiCriateRelatedLink();
 }
 
 
