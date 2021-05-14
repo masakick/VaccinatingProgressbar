@@ -18,6 +18,7 @@ let latest_value;
 let last_update;
 let progress;
 let remainingDays
+let remainingDays60
 let speed;
 let speed_per_million;
 let canvas_height_ratio = 0.5;
@@ -127,8 +128,10 @@ function gotData(data) {
   last_update = country_data[country_data.length-1].date;
 
   progress = latest_value.people_fully_vaccinated.value / population;
-  remainingDays = (population *2 - latest_value.total_vaccinations.value) /  latest_value.daily_vaccinations.value;
-  remainingDays = Math.floor(remainingDays);
+  remainingDays = calcRemainingDays(population);
+  remainingDays60 = calcRemainingDays(population *0.6);
+
+
   speed = latest_value.daily_vaccinations.value;
   speed_per_million = latest_value.daily_vaccinations_per_million.value;
 
@@ -180,7 +183,7 @@ function drawProgressbar(){
 
 
   text("直近7日平均速度: " + speed + "回/日  (対人口比 "+speed_per_million+"回/日,100万人)", width/10, height/2+30);
-  text("完了まで残り  " + remainingDays + "日", width/10, height/2+50);
+  text("完了まで残り " + remainingDays + "日（60%まで残り "+remainingDays60+"日）", width/10, height/2+50);
 
   textSize(12);
   fill(32);
@@ -291,4 +294,18 @@ function compare_daily_vaccinations_raw(a, b) {
     comparison = -1;
   }
   return comparison;
+}
+
+function calcRemainingDays(people_shouldbe_vacinated){
+  let people_single_vaccinated = latest_value.total_vaccinations.value - 2* latest_value.people_fully_vaccinated.value;
+  let people_no_vacinated = people_shouldbe_vacinated - latest_value.people_fully_vaccinated.value - people_single_vaccinated;
+  let people_remain_vacinated = people_shouldbe_vacinated - latest_value.people_fully_vaccinated.value;
+  let remain_vacinations;
+  if(people_single_vaccinated + latest_value.people_fully_vaccinated.value < people_shouldbe_vacinated){
+    remain_vacinations = people_single_vaccinated + people_no_vacinated*2;
+  }
+  else{
+    remain_vacinations = people_shouldbe_vacinated - latest_value.people_fully_vaccinated.value;
+  }
+  return Math.floor( Math.max(0, remain_vacinations / latest_value.daily_vaccinations.value) );
 }
