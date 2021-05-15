@@ -179,11 +179,11 @@ function drawProgressbar(){
   textSize(16);
   text("Vaccinating "+country+"... " + percentage +"% 完了", width/10, height/2-41);
   textSize(12);
-  text( "(2回目接種済: "+ latest_value.people_fully_vaccinated.value +"人/ " + population+"人)", width/10, height/2-22 )
+  text( "(2回目接種済: "+ latest_value.people_fully_vaccinated.value.toLocaleString() +"人/ " + population.toLocaleString()+"人)", width/10, height/2-22 )
 
 
-  text("直近7日平均速度: " + speed + "回/日  (対人口比 "+speed_per_million+"回/日,100万人)", width/10, height/2+30);
-  text("完了まで残り " + remainingDays + "日（60%まで残り "+remainingDays60+"日）", width/10, height/2+50);
+  text("直近7日平均速度: " + speed.toLocaleString() + "回/日  (対人口比 "+speed_per_million.toLocaleString()+"回/日,100万人)", width/10, height/2+30);
+  text("完了まで残り " + remainingDays.toLocaleString() + "日（60%まで残り "+remainingDays60.toLocaleString()+"日）", width/10, height/2+50);
 
   textSize(12);
   fill(32);
@@ -251,7 +251,7 @@ function uiCreateMaxValue(){
   let day = day_jp[( new Date(date) ).getDay()];
 
 
-  let ui_maxValue = createDiv('<p><strong>最多接種記録</strong><br/>(月曜除く) '+date_ex+'('+day_ex+') '+ value_ex+'回<br/>(月曜含む) '+date+'('+day+') '+ value+'回<p>');
+  let ui_maxValue = createDiv('<p><strong>最多接種記録</strong><br/>(月曜除く) '+date_ex+'('+day_ex+') '+ value_ex.toLocaleString()+'回<br/>(月曜含む) '+date+'('+day+') '+ value.toLocaleString()+'回<p>');
   ui_maxValue.addClass('max-value');
 }
 
@@ -265,7 +265,7 @@ function uiCreateLatestTable(){
     let date = obj.date;
     let day = day_jp[( new Date(date) ).getDay()];
     let value = obj.daily_vaccinations_raw
-    let row = createElement('tr','<td>'+date+'('+day+')</td><td>'+value+'回</td>');
+    let row = createElement('tr','<td>'+date+'('+day+')</td><td>'+value.toLocaleString()+'回</td>');
     ui_table.child(row);
   }
   ui_latestTableDiv.child(ui_table);
