@@ -167,7 +167,7 @@ function drawProgressbar(){
   let percentage = Math.floor(progress*100000)/1000;
 
   fill(0,0,80)
-  rect(width*0.075, height/2-70, width*0.85,140);
+  rect(width*0.065, height/2-70, width*0.87,140);
   textAlign(LEFT);
   noStroke();
   fill(48);
@@ -177,13 +177,13 @@ function drawProgressbar(){
 
   fill(255);
   textSize(16);
-  text("Vaccinating "+country+"... " + percentage +"% 完了", width/10, height/2-41);
+  text("Vaccinating "+country+"...  " + percentage +"%", width/10, height/2-41);
   textSize(12);
-  text( "(2回目接種済: "+ latest_value.people_fully_vaccinated.value.toLocaleString() +"人/ " + population.toLocaleString()+"人)", width/10, height/2-22 )
+  text( "(2回接種: "+ latest_value.people_fully_vaccinated.value.toLocaleString() +"人/ " + population.toLocaleString()+"人)", width/10, height/2-22 )
 
 
-  text("直近7日平均速度: " + speed.toLocaleString() + "回/日  (対人口比 "+speed_per_million.toLocaleString()+"回/日,100万人)", width/10, height/2+30);
-  text("完了まで残り " + remainingDays.toLocaleString() + "日（60%まで残り "+remainingDays60.toLocaleString()+"日）", width/10, height/2+50);
+  text("直近7日平均: " + speed.toLocaleString() + "回/日  (対人口比 "+speed_per_million.toLocaleString()+"回/日,100万人)", width/10, height/2+30);
+  text("完了まで残り" + remainingDays.toLocaleString() + "日（60%まで残り"+remainingDays60.toLocaleString()+"日）", width/10, height/2+50);
 
   textSize(12);
   fill(32);
@@ -197,8 +197,8 @@ function uiCreateSelect(){
   ui_select = createDiv('');
   ui_select.addClass('countrySelector');
   sel = createSelect();
-  sel.option('他の国を見る',0);
-  sel.selected('他の国を見る');
+  sel.option('他の国・地域を見る',0);
+  sel.selected('他の国・地域を見る');
 
   sel.option('ーーアジアーー');
   sel.disable('ーーアジアーー');
@@ -223,6 +223,16 @@ function uiCreateSelect(){
   sel.option('ーー南米ーー');
   sel.disable('ーー南米ーー');
   sel.option('　ブラジル','BRA.html');
+
+  sel.option('ーー地域ーー');
+  sel.disable('ーー地域ーー');
+  sel.option('　世界全体','OWID_WRL.html');
+  sel.option('　アジア','OWID_ASI.html');
+  sel.option('　ヨーロッパ','OWID_EUR.html');
+  sel.option('　北米','OWID_NAM.html');
+  sel.option('　南米','OWID_SAM.html');
+  sel.option('　アフリカ','OWID_AFR.html');
+  sel.option('　オセアニア','OWID_OCE.html');
 
   sel.changed(uiChangeSelect);
   ui_select.child(sel);

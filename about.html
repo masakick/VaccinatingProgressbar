@@ -33,7 +33,7 @@
     <p><strong>各表示項目について</strong></p>
     <ul>
       <li><strong>進捗率（完了までの%）</strong>：2回目の接種を終えた人数を示す「people_fully_vaccinated」を総人口で割った数値を表示しています。集団免疫獲得の観点から全人口に接種は必要ないだろうというツッコミはあり得ます。総人口の参照先データは<a href="https://github.com/owid/covid-19-data/blob/master/scripts/input/un/population_2020.csv">こちら</a></li>
-      <li><strong>直近7日平均速度</strong>：「daily_vaccinations」を表示しています。これは、過去７日間の接種回数の移動平均値です。（土日祝日など報告がない日は報告のあった前後の累積接種数からOWIDが線形補間するこのこと。）詳しくはOWIDの<a href="https://github.com/owid/covid-19-data/issues/333#issuecomment-763015298">ページ</a>を参照してください。</li>
+      <li><strong>直近7日平均</strong>：「daily_vaccinations」を表示しています。これは、過去７日間の接種回数の移動平均値です。（土日祝日など報告がない日は報告のあった前後の累積接種数からOWIDが線形補間するこのこと。）詳しくはOWIDの<a href="https://github.com/owid/covid-19-data/issues/333#issuecomment-763015298">ページ</a>を参照してください。</li>
       <li><strong>対人口比</strong>：「daily_vaccinations_per_millions」を表示しています。これは人口100万人あたり1日に何回接種できたかを表します。総人口が多い国は接種できる医療者も多く接種回数も多いですから、人口差を考慮して多国間の速度を比べるのに役立つかと思います。詳しくはOWIDの<a href="https://github.com/owid/covid-19-data/tree/master/public/data/vaccinations">ページ</a>を参照してください。</li>
       <li><strong>完了までの残り日数</strong>：完了の条件を総人口の2回接種と仮定した場合の（実際そんな回数は必要ないと思いますが）、残りの回数を前述の「daily_vaccinations」で割って表示しています。</li>
       <li><strong>60%までの残り日数</strong>：完了の条件を集団免疫獲得の目安となる総人口の60%の2回接種と仮定した場合の残りの回数を前述の「daily_vaccinations」で割って表示しています。</li>
@@ -73,6 +73,7 @@
     <hr>
     <p><strong>更新履歴</strong></p>
     <ul>
+      <li>2021/05/17:世界全体、アジア、ヨーロッパ、北米、南米、アフリカ、オセアニアを追加、ラベルを少し短縮。</li>
       <li>2021/05/15:回数、人数の数値を三桁ごとの「,」区切りで表記</li>
       <li>2021/05/14:「60%までの残り日数」を表示</li>
       <li>2021/04/25:過去の最多接種回数と、直近の接種回数を下部に表示</li>
