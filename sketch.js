@@ -25,6 +25,10 @@ let canvas_height_ratio = 0.5;
 let error_code = 0;
 let ui_select;
 let ui_shareButton;
+let ui_eulabutton_size = [200,30];
+let ui_eulabutton_color = [255,255,255];
+let ui_eulabutton_psition_from_center = [0,-120];
+let is_mouse_on_ULA_button = false;
 let sel;
 let day_jp = [ "日", "月", "火", "水", "木", "金", "土" ] ;
 
@@ -175,8 +179,21 @@ function drawProgressbar(){
   fill(0,180,255);
   rect(width/10, height/2-12, width*0.8*progress, 20);
 
-  fill(255);
+
+  fill(ui_eulabutton_color[0],ui_eulabutton_color[1],ui_eulabutton_color[2]);
+  stroke(255);
+  rect(width/2-ui_eulabutton_size[0]/2 + ui_eulabutton_psition_from_center[0], height/2+ui_eulabutton_psition_from_center[1], ui_eulabutton_size[0], ui_eulabutton_size[1]);
+  noStroke();
+
+  fill(0);
   textSize(16);
+
+  textAlign(CENTER);
+  text("利用規約",width/2 + ui_eulabutton_psition_from_center[0], height/2+ui_eulabutton_psition_from_center[1]+20)
+
+  fill(255);
+  textAlign(LEFT);
+
   text("Vaccinating "+country+"...  " + percentage +"%", width/10, height/2-41);
   textSize(12);
   text( "(2回接種: "+ latest_value.people_fully_vaccinated.value.toLocaleString() +"人/ " + population.toLocaleString()+"人)", width/10, height/2-22 )
@@ -191,6 +208,27 @@ function drawProgressbar(){
   text("last update:"+ last_update, width/2, height/2+100);
 
 
+
+}
+
+function mouseMoved(){
+  let buttonLTX = width/2-ui_eulabutton_size[0]/2 + ui_eulabutton_psition_from_center[0];
+  let buttonWidth = ui_eulabutton_size[0];
+  let buttonLTY = height/2+ui_eulabutton_psition_from_center[1];
+  let buttonHeight = ui_eulabutton_size[1];
+  if(mouseX > buttonLTX &&  mouseX < buttonLTX + buttonWidth &&
+     mouseY > buttonLTY && mouseY < buttonLTY + buttonHeight){
+    cursor('pointer');
+    is_mouse_on_ULA_button = true;
+  }
+  else{
+    cursor('default');
+    is_mouse_on_ULA_button = false;
+  }
+}
+
+function mouseReleased(){
+  if(is_mouse_on_ULA_button) location.href = "about.html";
 }
 
 function uiCreateSelect(){
