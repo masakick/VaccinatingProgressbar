@@ -48,6 +48,40 @@ function requestVaccination(){
   loadJSON(url_vaccinations, gotData);
 }
 
+function drawMilestone(){
+  let text_w = 0;
+  pb_milestone.forEach((item, i) => {
+    let remainingDays = (item.absolute)? calcRemainingDays(item.value) : calcRemainingDays(item.value * population);
+    let barRatio = (item.absolute)? item.value / population : item.value;
+
+    let marker_x = width/10 + width*0.8*barRatio;
+    let marker_y = height/2-2;
+    let annotation_x = width/10 + text_w;
+    let annotation_y = (height/2+60);
+    if(item.marker){
+      if(item.fill) fill(255);
+      else noFill();
+      if(item.stroke) stroke(255);
+      else noStroke();
+      drawMarker(marker_x, marker_y);
+      drawMarker(annotation_x+20, annotation_y);
+      annotation_x += 30;
+    }
+    noStroke();
+    fill(255);
+    let textStr = item.label + "まで残り" + remainingDays.toLocaleString() + "日";
+    text(textStr, annotation_x, annotation_y);
+    text_w += textWidth(textStr);
+  });
+
+}
+
+function drawMarker(x, y){
+  let w = 10;
+  let h = 10;
+  triangle(x,y, x-w/2, y-h, x+w/2, y-h);
+}
+
 function gotPopTable(data){
   let rows = data.matchRows(country_code, 'iso_code');
   if(rows.length != 1) error_code = 1;
@@ -58,6 +92,8 @@ function gotPopTable(data){
 }
 
 function gotData(data) {
+
+
 
   var country_data = data.filter(function(item, index){
     if (item.country == country) return true;
@@ -175,9 +211,9 @@ function drawProgressbar(){
   textAlign(LEFT);
   noStroke();
   fill(48);
-  rect(width/10, height/2-12, width*0.8, 20);
+  rect(width/10, height/2-2, width*0.8, 20);
   fill(0,180,255);
-  rect(width/10, height/2-12, width*0.8*progress, 20);
+  rect(width/10, height/2-2, width*0.8*progress, 20);
 
 
   fill(ui_eulabutton_color[0],ui_eulabutton_color[1],ui_eulabutton_color[2]);
@@ -199,8 +235,12 @@ function drawProgressbar(){
   text( "(2回接種: "+ latest_value.people_fully_vaccinated.value.toLocaleString() +"人/ " + population.toLocaleString()+"人)", width/10, height/2-22 )
 
 
-  text("直近7日平均: " + speed.toLocaleString() + "回/日  (対人口比 "+speed_per_million.toLocaleString()+"回/日,100万人)", width/10, height/2+30);
-  text("完了まで残り" + remainingDays.toLocaleString() + "日（60%まで残り"+remainingDays60.toLocaleString()+"日）", width/10, height/2+50);
+  text("直近7日平均: " + speed.toLocaleString() + "回/日  (対人口比 "+speed_per_million.toLocaleString()+"回/日,100万人)", width/10, height/2+40);
+
+
+  //text("完了まで残り" + remainingDays.toLocaleString() + "日（60%まで残り"+remainingDays60.toLocaleString()+"日）", width/10, height/2+50);
+
+  drawMilestone();
 
   textSize(12);
   fill(32);
@@ -241,26 +281,54 @@ function uiCreateSelect(){
   sel.option('ーーアジアーー');
   sel.disable('ーーアジアーー');
   sel.option('　日本','/');
+  sel.option('　インドネシア','IDN.html');
+  sel.option('　フィリピン','PHL.html');
+  sel.option('　ベトナム','VNM.html');
+  sel.option('　タイ','THA.html');
   sel.option('　イスラエル','ISR.html');
   sel.option('　シンガポール','SGP.html');
   sel.option('　韓国','KOR.html');
   sel.option('　インド','IND.html');
+  sel.option('　パキスタン','PAK.html');
 
   sel.option('ーーヨーロッパーー');
   sel.disable('ーーヨーロッパーー');
   sel.option('　イギリス','GBR.html');
   sel.option('　フランス','FRA.html');
   sel.option('　ドイツ','DEU.html');
-  sel.option('　ロシア','RUS.html');
+  sel.option('　イタリア','ITA.html');
+  sel.option('　スペイン','ESP.html');
+  sel.option('　ウクライナ','UKR.html');
+  sel.option('　ポーランド','POL.html');
+  sel.option('　ウズベキスタン','UZB.html');
+  sel.option('　ルーマニア','ROU.html');
+  sel.option('　カザフスタン','KAZ.html');
+  sel.option('　オランダ','NLD.html');
+  sel.option('　ベルギー','BEL.html');
+  sel.option('　ギリシャ','GRC.html');
+  sel.option('　チェコ','CZE.html');
+  sel.option('　スウェーデン','SWE.html');
+  sel.option('　ポルトガル','PRT.html');
   sel.option('　ハンガリー','HUN.html');
+  sel.option('　ロシア','RUS.html');
 
   sel.option('ーー北米ーー');
   sel.disable('ーー北米ーー');
   sel.option('　アメリカ','USA.html');
+  sel.option('　カナダ','CAN.html');
 
   sel.option('ーー南米ーー');
   sel.disable('ーー南米ーー');
   sel.option('　ブラジル','BRA.html');
+  sel.option('　コロンビア','COL.html');
+
+  sel.option('ーーアフリカーー');
+  sel.disable('ーーアフリカーー');
+  sel.option('　南アフリカ','ZAF.html');
+
+  sel.option('ーーオセアニアーー');
+  sel.disable('ーーオセアニアーー');
+  sel.option('　ニュージーランド','NZL.html');
 
   sel.option('ーー地域ーー');
   sel.disable('ーー地域ーー');
@@ -290,17 +358,19 @@ function uiCreateShareButton(){
 }
 
 function uiCreateMaxValue(){
-  let date_ex = daily_vaccinations_raw_max_exceptmonday.date;
-  let value_ex = daily_vaccinations_raw_max_exceptmonday.daily_vaccinations_raw;
-  let day_ex = day_jp[( new Date(date_ex) ).getDay()];
+  if(daily_vaccinations_raw_history.length>0){
+    let date_ex = daily_vaccinations_raw_max_exceptmonday.date;
+    let value_ex = daily_vaccinations_raw_max_exceptmonday.daily_vaccinations_raw;
+    let day_ex = day_jp[( new Date(date_ex) ).getDay()];
 
-  let date = daily_vaccinations_raw_max.date;
-  let value = daily_vaccinations_raw_max.daily_vaccinations_raw;
-  let day = day_jp[( new Date(date) ).getDay()];
+    let date = daily_vaccinations_raw_max.date;
+    let value = daily_vaccinations_raw_max.daily_vaccinations_raw;
+    let day = day_jp[( new Date(date) ).getDay()];
 
 
-  let ui_maxValue = createDiv('<p><strong>最多接種記録</strong><br/>(月曜除く) '+date_ex+'('+day_ex+') '+ value_ex.toLocaleString()+'回<br/>(月曜含む) '+date+'('+day+') '+ value.toLocaleString()+'回<p>');
-  ui_maxValue.addClass('max-value');
+    let ui_maxValue = createDiv('<p><strong>最多接種記録</strong><br/>(月曜除く) '+date_ex+'('+day_ex+') '+ value_ex.toLocaleString()+'回<br/>(月曜含む) '+date+'('+day+') '+ value.toLocaleString()+'回<p>');
+    ui_maxValue.addClass('max-value');
+  }
 }
 
 function uiCreateLatestTable(){
