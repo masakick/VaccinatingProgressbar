@@ -285,11 +285,13 @@ function uiCreateSelect(){
   sel.option('　フィリピン','PHL.html');
   sel.option('　ベトナム','VNM.html');
   sel.option('　タイ','THA.html');
-  sel.option('　イスラエル','ISR.html');
   sel.option('　シンガポール','SGP.html');
   sel.option('　韓国','KOR.html');
   sel.option('　インド','IND.html');
   sel.option('　パキスタン','PAK.html');
+  sel.option('　イスラエル','ISR.html');
+  sel.option('　ウズベキスタン','UZB.html');
+  sel.option('　カザフスタン','KAZ.html');
 
   sel.option('ーーヨーロッパーー');
   sel.disable('ーーヨーロッパーー');
@@ -300,9 +302,7 @@ function uiCreateSelect(){
   sel.option('　スペイン','ESP.html');
   sel.option('　ウクライナ','UKR.html');
   sel.option('　ポーランド','POL.html');
-  sel.option('　ウズベキスタン','UZB.html');
   sel.option('　ルーマニア','ROU.html');
-  sel.option('　カザフスタン','KAZ.html');
   sel.option('　オランダ','NLD.html');
   sel.option('　ベルギー','BEL.html');
   sel.option('　ギリシャ','GRC.html');
