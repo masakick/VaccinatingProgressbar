@@ -25,14 +25,21 @@ canvas {
   margin:1em auto;
 position:relative;
 }
+.saveButton{
+  width:10rem;
+  margin:1em auto;
+  position:relative;
+}
 
-select{
+
+
+select,button{
   -webkit-appearance:none;
     appearance:none;
   width:100%;
   padding:0.5em 0.5em;
   box-sizing:border-box;
-  font-size:1em;
+  font-size:0.8em;
   border:#ccc 1px solid;
   border-radius:0;
   background:#fff;

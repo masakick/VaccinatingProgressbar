@@ -29,6 +29,7 @@ let ui_shareButton;
 let ui_eulabutton_size = [200,30];
 let ui_eulabutton_color = [255,255,255];
 let ui_eulabutton_position_from_center = [0,-120];
+let ui_ui_save_button;
 let is_mouse_on_ULA_button = false;
 let sel;
 let day_jp = [ "日", "月", "火", "水", "木", "金", "土" ] ;
@@ -301,6 +302,20 @@ function mouseReleased(){
   if(is_mouse_on_ULA_button) location.href = "about.html";
 }
 
+function uiCreateSaveButton(){
+
+  let ui_save_button_container = createDiv('');
+  ui_save_button_container.addClass('saveButton');
+  ui_save_button = createButton('画像を保存');
+  ui_save_button.mousePressed(saveAsImage);
+  ui_save_button_container.child(ui_save_button);
+}
+
+function saveAsImage(){
+  let filename = 'VPB'+'_'+pb_country_code+'_'+last_update+'.jpg';
+  save(filename);
+}
+
 function uiCreateSelect(){
   ui_select = createDiv('');
   ui_select.addClass('countrySelector');
@@ -424,6 +439,7 @@ function uiCriateRelatedLink(){
 }
 
 function createUI(){
+  uiCreateSaveButton();
   uiCreateMaxValue();
   uiCreateLatestTable();
   uiCreateSelect();
