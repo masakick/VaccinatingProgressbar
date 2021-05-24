@@ -15,6 +15,7 @@ let daily_vaccinations_raw_history_exceptmonday_sorted;
 let daily_vaccinations_raw_max;
 let daily_vaccinations_raw_max_exceptmonday;
 let latest_value;
+let previous_valuse;
 let last_update;
 let progress;
 let remainingDays
@@ -27,7 +28,7 @@ let ui_select;
 let ui_shareButton;
 let ui_eulabutton_size = [200,30];
 let ui_eulabutton_color = [255,255,255];
-let ui_eulabutton_psition_from_center = [0,-120];
+let ui_eulabutton_position_from_center = [0,-120];
 let is_mouse_on_ULA_button = false;
 let sel;
 let day_jp = [ "日", "月", "火", "水", "木", "金", "土" ] ;
@@ -51,25 +52,29 @@ function requestVaccination(){
 function drawMilestone(){
   let text_w = 0;
   pb_milestone.forEach((item, i) => {
-    let remainingDays = (item.absolute)? calcRemainingDays(item.value) : calcRemainingDays(item.value * population);
+    let remainingDays = (item.absolute)? calcRemainingDays(item.value,latest_value) : calcRemainingDays(item.value * population,latest_value);
+    let remainingDaysPrevious =  (item.absolute)? calcRemainingDays(item.value,previous_valuse) : calcRemainingDays(item.value * population,previous_valuse);
+    console.log(remainingDaysPrevious);
     let barRatio = (item.absolute)? item.value / population : item.value;
 
     let marker_x = width/10 + width*0.8*barRatio;
-    let marker_y = height/2-2;
-    let annotation_x = width/10 + text_w;
-    let annotation_y = (height/2+60);
+    let marker_y = height/2-15;
+    let annotation_x = width/10;
+    let annotation_y = (height/2+43) + i*18;
     if(item.marker){
       if(item.fill) fill(255);
       else noFill();
       if(item.stroke) stroke(255);
       else noStroke();
       drawMarker(marker_x, marker_y);
-      drawMarker(annotation_x+20, annotation_y);
-      annotation_x += 30;
+      drawMarker(annotation_x+5, annotation_y);
+      annotation_x+=15;
     }
     noStroke();
     fill(255);
-    let textStr = item.label + "まで残り" + remainingDays.toLocaleString() + "日";
+    let difference = remainingDays-remainingDaysPrevious;
+    let plus = (difference>0)? '+' : '';
+    let textStr = item.label + "まで残り" + remainingDays.toLocaleString() + "日"+" (前日差 "+plus+ difference +"日)";
     text(textStr, annotation_x, annotation_y);
     text_w += textWidth(textStr);
   });
@@ -77,8 +82,8 @@ function drawMilestone(){
 }
 
 function drawMarker(x, y){
-  let w = 10;
-  let h = 10;
+  let w = 8;
+  let h = 8;
   triangle(x,y, x-w/2, y-h, x+w/2, y-h);
 }
 
@@ -165,11 +170,34 @@ function gotData(data) {
       }
   }
 
+  previous_valuse = {
+    'total_vaccinations' :
+      {
+        'date' : total_vaccination_history[total_vaccination_history.length-2].date,
+        'value': total_vaccination_history[total_vaccination_history.length-2].total_vaccinations
+      },
+    'people_fully_vaccinated':
+      {
+        'date' : people_fully_vaccinated_history[people_fully_vaccinated_history.length-2].date,
+        'value': people_fully_vaccinated_history[people_fully_vaccinated_history.length-2].people_fully_vaccinated
+      },
+    'daily_vaccinations' :
+      {
+        'date' : daily_vaccination_history[daily_vaccination_history.length-2].date,
+        'value': daily_vaccination_history[daily_vaccination_history.length-2].daily_vaccinations
+      },
+    'daily_vaccinations_per_million':
+      {
+        'date' : daily_vaccinations_per_million_history[daily_vaccinations_per_million_history.length-2].date,
+        'value': daily_vaccinations_per_million_history[daily_vaccinations_per_million_history.length-2].daily_vaccinations_per_million
+      }
+  }
+
   last_update = country_data[country_data.length-1].date;
 
   progress = latest_value.people_fully_vaccinated.value / population;
-  remainingDays = calcRemainingDays(population);
-  remainingDays60 = calcRemainingDays(population *0.6);
+  remainingDays = calcRemainingDays(population,latest_value);
+  remainingDays60 = calcRemainingDays(population *0.6,latest_value);
 
 
   speed = latest_value.daily_vaccinations.value;
@@ -187,8 +215,10 @@ function draw() {
   }
   else{
 	background(200);
-	text("Loading", width/2 -50, 50);
+  textAlign(CENTER);
+	text("Loading", width/2, 50);
   if(error_code !=0) text("Error code:" + error_code,width/2 -50, height/2-20);
+  textAlign(LEFT);
   }
 }
 
@@ -211,31 +241,31 @@ function drawProgressbar(){
   textAlign(LEFT);
   noStroke();
   fill(48);
-  rect(width/10, height/2-2, width*0.8, 20);
+  rect(width/10, height/2-15, width*0.8, 20);
   fill(0,180,255);
-  rect(width/10, height/2-2, width*0.8*progress, 20);
+  rect(width/10, height/2-15, width*0.8*progress, 20);
 
 
   fill(ui_eulabutton_color[0],ui_eulabutton_color[1],ui_eulabutton_color[2]);
   stroke(255);
-  rect(width/2-ui_eulabutton_size[0]/2 + ui_eulabutton_psition_from_center[0], height/2+ui_eulabutton_psition_from_center[1], ui_eulabutton_size[0], ui_eulabutton_size[1]);
+  rect(width/2-ui_eulabutton_size[0]/2 + ui_eulabutton_position_from_center[0], height/2+ui_eulabutton_position_from_center[1], ui_eulabutton_size[0], ui_eulabutton_size[1]);
   noStroke();
 
   fill(0);
   textSize(16);
 
   textAlign(CENTER);
-  text("利用規約",width/2 + ui_eulabutton_psition_from_center[0], height/2+ui_eulabutton_psition_from_center[1]+20)
+  text("利用規約",width/2 + ui_eulabutton_position_from_center[0], height/2+ui_eulabutton_position_from_center[1]+20)
 
   fill(255);
   textAlign(LEFT);
 
-  text("Vaccinating "+country+"...  " + percentage +"%", width/10, height/2-41);
+  text("Vaccinating "+country+"...  " + percentage +"%", width/10, height/2-46);
   textSize(12);
-  text( "(2回接種: "+ latest_value.people_fully_vaccinated.value.toLocaleString() +"人/ " + population.toLocaleString()+"人)", width/10, height/2-22 )
+  text( "(2回接種: "+ latest_value.people_fully_vaccinated.value.toLocaleString() +"人/ " + population.toLocaleString()+"人)", width/10, height/2-28 )
 
 
-  text("直近7日平均: " + speed.toLocaleString() + "回/日  (対人口比 "+speed_per_million.toLocaleString()+"回/日,100万人)", width/10, height/2+40);
+  text("直近7日平均: " + speed.toLocaleString() + "回/日  (対人口比 "+speed_per_million.toLocaleString()+"回/日,100万人)", width/10, height/2+24);
 
 
   //text("完了まで残り" + remainingDays.toLocaleString() + "日（60%まで残り"+remainingDays60.toLocaleString()+"日）", width/10, height/2+50);
@@ -252,9 +282,9 @@ function drawProgressbar(){
 }
 
 function mouseMoved(){
-  let buttonLTX = width/2-ui_eulabutton_size[0]/2 + ui_eulabutton_psition_from_center[0];
+  let buttonLTX = width/2-ui_eulabutton_size[0]/2 + ui_eulabutton_position_from_center[0];
   let buttonWidth = ui_eulabutton_size[0];
-  let buttonLTY = height/2+ui_eulabutton_psition_from_center[1];
+  let buttonLTY = height/2+ui_eulabutton_position_from_center[1];
   let buttonHeight = ui_eulabutton_size[1];
   if(mouseX > buttonLTX &&  mouseX < buttonLTX + buttonWidth &&
      mouseY > buttonLTY && mouseY < buttonLTY + buttonHeight){
@@ -414,16 +444,16 @@ function compare_daily_vaccinations_raw(a, b) {
   return comparison;
 }
 
-function calcRemainingDays(people_shouldbe_vacinated){
-  let people_single_vaccinated = latest_value.total_vaccinations.value - 2* latest_value.people_fully_vaccinated.value;
-  let people_no_vacinated = people_shouldbe_vacinated - latest_value.people_fully_vaccinated.value - people_single_vaccinated;
-  let people_remain_vacinated = people_shouldbe_vacinated - latest_value.people_fully_vaccinated.value;
+function calcRemainingDays(people_shouldbe_vacinated, data){
+  let people_single_vaccinated = data.total_vaccinations.value - 2* data.people_fully_vaccinated.value;
+  let people_no_vacinated = people_shouldbe_vacinated - data.people_fully_vaccinated.value - people_single_vaccinated;
+  let people_remain_vacinated = people_shouldbe_vacinated - data.people_fully_vaccinated.value;
   let remain_vacinations;
-  if(people_single_vaccinated + latest_value.people_fully_vaccinated.value < people_shouldbe_vacinated){
+  if(people_single_vaccinated + data.people_fully_vaccinated.value < people_shouldbe_vacinated){
     remain_vacinations = people_single_vaccinated + people_no_vacinated*2;
   }
   else{
-    remain_vacinations = people_shouldbe_vacinated - latest_value.people_fully_vaccinated.value;
+    remain_vacinations = people_shouldbe_vacinated - data.people_fully_vaccinated.value;
   }
-  return Math.floor( Math.max(0, remain_vacinations / latest_value.daily_vaccinations.value) );
+  return Math.floor( Math.max(0, remain_vacinations / data.daily_vaccinations.value) );
 }
