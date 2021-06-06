@@ -25,12 +25,17 @@ canvas {
   margin:1em auto;
 position:relative;
 }
-.saveButton{
+.saveButton,.importantNotificationButton{
   width:10rem;
   margin:1em auto;
   position:relative;
 }
 
+.importantNotificationButton button{
+  font-size:1.2rem;
+  color:#fff;
+  background:#f00;
+}
 
 
 select,button{

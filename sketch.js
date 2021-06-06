@@ -55,7 +55,6 @@ function drawMilestone(){
   pb_milestone.forEach((item, i) => {
     let remainingDays = (item.absolute)? calcRemainingDays(item.value,latest_value) : calcRemainingDays(item.value * population,latest_value);
     let remainingDaysPrevious =  (item.absolute)? calcRemainingDays(item.value,previous_valuse) : calcRemainingDays(item.value * population,previous_valuse);
-    console.log(remainingDaysPrevious);
     let barRatio = (item.absolute)? item.value / population : item.value;
 
     let marker_x = width/10 + width*0.8*barRatio;
@@ -75,7 +74,12 @@ function drawMilestone(){
     fill(255);
     let difference = remainingDays-remainingDaysPrevious;
     let plus = (difference>0)? '+' : '';
-    let textStr = item.label + "まで残り" + remainingDays.toLocaleString() + "日"+" (前日差 "+plus+ difference +"日)";
+    let str_remainingDays = remainingDays.toLocaleString() + "日";
+    let str_difference = plus+ difference +"日";
+    if(country_code=="JPN"){
+      str_remainingDays = str_difference = "調整中";
+    }
+    let textStr = item.label + "まで " + str_remainingDays+" (前日差 "+str_difference+")";
     text(textStr, annotation_x, annotation_y);
     text_w += textWidth(textStr);
   });
@@ -265,11 +269,13 @@ function drawProgressbar(){
   textSize(12);
   text( "(2回接種: "+ latest_value.people_fully_vaccinated.value.toLocaleString() +"人/ " + population.toLocaleString()+"人)", width/10, height/2-28 )
 
+  let str_speed = speed.toLocaleString()+ "回/日";
+  let str_speed_per_million = speed_per_million.toLocaleString();+"回/日,100万人";
+  if(country_code === "JPN"){
+    str_speed = str_speed_per_million = "調整中";
+  }
+  text("直近7日平均: " + str_speed+ " (対人口比 "+str_speed_per_million+")", width/10, height/2+24);
 
-  text("直近7日平均: " + speed.toLocaleString() + "回/日  (対人口比 "+speed_per_million.toLocaleString()+"回/日,100万人)", width/10, height/2+24);
-
-
-  //text("完了まで残り" + remainingDays.toLocaleString() + "日（60%まで残り"+remainingDays60.toLocaleString()+"日）", width/10, height/2+50);
 
   drawMilestone();
 
@@ -309,6 +315,14 @@ function uiCreateSaveButton(){
   ui_save_button = createButton('画像を保存');
   ui_save_button.mousePressed(saveAsImage);
   ui_save_button_container.child(ui_save_button);
+}
+
+function uiCreateImportantNotificationButton(){
+  let ui_important_notification_button_container = createDiv('');
+  ui_important_notification_button_container.addClass('importantNotificationButton');
+  ui_important_notification_button = createButton('重要なお知らせ');
+  ui_important_notification_button.mousePressed(function(){ location.href="note.html"; });
+  ui_important_notification_button_container.child(ui_important_notification_button);
 }
 
 function saveAsImage(){
@@ -439,9 +453,14 @@ function uiCriateRelatedLink(){
 }
 
 function createUI(){
+  if(country_code === "JPN"){
+    uiCreateImportantNotificationButton();
+  }
   uiCreateSaveButton();
-  uiCreateMaxValue();
-  uiCreateLatestTable();
+  if(country_code !== "JPN"){
+    uiCreateMaxValue();
+    uiCreateLatestTable();
+  }
   uiCreateSelect();
   uiCriateRelatedLink();
 }

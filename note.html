@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-194823079-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-194823079-1');
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>重要なお知らせ｜ワクチン接種プログレスバー</title>
+    <style>
+    body {
+      margin: 1em;
+      padding: 1em;
+    }
+    </style>
+
+  </head>
+  <body>
+    <h1>重要なお知らせ（6/7）</h1>
+    <p>本サイトは、<a href="https://ourworldindata.org/covid-vaccinations">Our World in Data</a>（以下、OWID）が公表している各国のワクチン接種状況データを利用して可視化していますが、日本に関して実態と乖離する可能性があることがわかりました。</p>
+    <p>そのため日本のプログレスバー表示については問題が解消するまで、累積接種数と進捗率のみを表示し、速度、残日数、最多接種記録は表示しません。</p>
+    <h2>再開までの見通し</h2>
+    <p>原因については後述しますが、これまで通りの形式で表示するには、現状では官邸の発表データを独自に集計する必要があります。開発者自身も速度を観測するためにこのサイトを運営しているので多少手間でも数日以内に対応するつもりですが、デイリーの更新は難しくなるかもしれません。（内閣CIOポータルが高齢者のワクチン接種状況APIを整備していますが、現状では医療従事者のデータが統合されていないためこれも使えません。他に良き方法をご存知の方はぜひお知らせください。）</p>
+    <h2>解離の原因と現時点での検証</h2>
+    <p>OWIDは、官邸が発表した累積種回数（A）から前日に官邸が発表した累積種回数（B）を引いた数を1日の接種回数（C）と定義しています。しかし官邸が発表する累積接種回数（A） は、当日報告された1日分の接種回数（D）に 前日以前の接種の未登録分（E）を加えた数となっているようで、当然、累積種回数（B）が発表翌日以降に増えるわけですが、OWIDは一度発表された（B）を遡って加味しないため、OWIDの1日の接種回数（C）には当日接種した回数以外に未登録だった接種回数（E）が上乗せされるため、1日の実際の接種実績よりも過大な数値となります。以下は、1日の接種回数を官邸とOWIDで比較した表です。</p>
+    <p><img src="/assets/table01.png" width="100%"></p>
+    <p>未登録分が集計の遅れによるものなのか何なのか分かりませんが、とにかく、官邸は一度発表したデータをあとで更新する、OWIDは遡って更新しないということだけが確かです。違っていたら<a href="https://bit.ly/2Q8aaCB">Twitter</a>でメンションいただければ助かります。</p>
+    <p>引き続き、<a href="/about.html">利用規約</a>にご同意の上でご利用ください。</p>
+    <hr>
+  </body>
+</html>
