@@ -33,6 +33,10 @@ let ui_ui_save_button;
 let is_mouse_on_ULA_button = false;
 let sel;
 let day_jp = [ "日", "月", "火", "水", "木", "金", "土" ] ;
+let daily_vaccination_shift_days = 0;
+let daily_vaccination_moving_avarage_begin = "";
+let daily_vaccination_moving_avarage_end = "";
+
 
 function setup() {
   country = pb_country;
@@ -47,6 +51,10 @@ function requestPopulation(){
 }
 function requestVaccination(){
   let url_vaccinations = 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/vaccinations.json';
+  if(country_code === "JPN"){
+    url_vaccinations = 'https://raw.githubusercontent.com/masakick/covid19-vaccination-data-japan/main/vaccination_japan.json';
+    daily_vaccination_shift_days = 5;
+  }
   loadJSON(url_vaccinations, gotData);
 }
 
@@ -60,7 +68,7 @@ function drawMilestone(){
     let marker_x = width/10 + width*0.8*barRatio;
     let marker_y = height/2-15;
     let annotation_x = width/10;
-    let annotation_y = (height/2+43) + i*18;
+    let annotation_y = (height/2+57) + i*15;
     if(item.marker){
       if(item.fill) fill(255);
       else noFill();
@@ -76,9 +84,11 @@ function drawMilestone(){
     let plus = (difference>0)? '+' : '';
     let str_remainingDays = remainingDays.toLocaleString() + "日";
     let str_difference = plus+ difference +"日";
+    /*
     if(country_code=="JPN"){
       str_remainingDays = str_difference = "調整中";
     }
+    */
     let textStr = item.label + "まで " + str_remainingDays+" (前日差 "+str_difference+")";
     text(textStr, annotation_x, annotation_y);
     text_w += textWidth(textStr);
@@ -103,7 +113,14 @@ function gotPopTable(data){
 
 function gotData(data) {
 
-
+  let total_vaccination_latest;
+  let total_vaccination_previous;
+  let people_fully_vaccinated_latest;
+  let people_fully_vaccinated_previous;
+  let daily_vaccination_latest;
+  let daily_vaccination_previous;
+  let daily_vaccinations_per_million_latest;
+  let daily_vaccinations_per_million_previous;
 
   var country_data = data.filter(function(item, index){
     if (item.country == country) return true;
@@ -113,17 +130,24 @@ function gotData(data) {
   total_vaccination_history = country_data.filter(function(item, index){
     if(item.total_vaccinations) return true;
   });
-  total_vaccination_latest = total_vaccination_history[total_vaccination_history.length-1];
+  total_vaccination_latest =    total_vaccination_history[total_vaccination_history.length-1];
+  total_vaccination_previous =  total_vaccination_history[total_vaccination_history.length-2];
 
   people_fully_vaccinated_history = country_data.filter(function(item, index){
     if(item.people_fully_vaccinated) return true;
   });
-  people_fully_vaccinated_latest = people_fully_vaccinated_history[people_fully_vaccinated_history.length-1];
+  people_fully_vaccinated_latest =    people_fully_vaccinated_history[people_fully_vaccinated_history.length-1];
+  people_fully_vaccinated_previous =  people_fully_vaccinated_history[people_fully_vaccinated_history.length-2];
 
   daily_vaccination_history = country_data.filter(function(item, index){
     if(item.daily_vaccinations) return true;
   });
-  daily_vaccination_latest = daily_vaccination_history[daily_vaccination_history.length-1];
+
+  daily_vaccination_latest =    daily_vaccination_history[daily_vaccination_history.length-1 - daily_vaccination_shift_days];
+  daily_vaccination_previous =  daily_vaccination_history[daily_vaccination_history.length-2 - daily_vaccination_shift_days];
+
+  daily_vaccination_moving_avarage_begin = daily_vaccination_history[daily_vaccination_history.length-1 - daily_vaccination_shift_days -6].date;
+  daily_vaccination_moving_avarage_end = daily_vaccination_latest.date;
 
   daily_vaccinations_raw_history = country_data.filter(function(item, index){
     if(item.daily_vaccinations_raw) return true;
@@ -150,7 +174,11 @@ function gotData(data) {
   daily_vaccinations_per_million_history = country_data.filter(function(item, index){
     if(item.daily_vaccinations_per_million) return true;
   });
-  daily_vaccinations_per_million_history_latest = daily_vaccinations_per_million_history[daily_vaccinations_per_million_history.length-1];
+
+  daily_vaccinations_per_million_latest =   daily_vaccinations_per_million_history[daily_vaccinations_per_million_history.length-1 - daily_vaccination_shift_days];
+  daily_vaccinations_per_million_previous = daily_vaccinations_per_million_history[daily_vaccinations_per_million_history.length-2 - daily_vaccination_shift_days];
+
+
 
   latest_value ={
     'total_vaccinations' :
@@ -170,31 +198,32 @@ function gotData(data) {
       },
     'daily_vaccinations_per_million':
       {
-        'date' : daily_vaccinations_per_million_history_latest.date,
-        'value': daily_vaccinations_per_million_history_latest.daily_vaccinations_per_million
+        'date' : daily_vaccinations_per_million_latest.date,
+        'value': daily_vaccinations_per_million_latest.daily_vaccinations_per_million
       }
   }
+
 
   previous_valuse = {
     'total_vaccinations' :
       {
-        'date' : total_vaccination_history[total_vaccination_history.length-2].date,
-        'value': total_vaccination_history[total_vaccination_history.length-2].total_vaccinations
+        'date' : total_vaccination_previous.date,
+        'value': total_vaccination_previous.total_vaccinations
       },
     'people_fully_vaccinated':
       {
-        'date' : people_fully_vaccinated_history[people_fully_vaccinated_history.length-2].date,
-        'value': people_fully_vaccinated_history[people_fully_vaccinated_history.length-2].people_fully_vaccinated
+        'date' : people_fully_vaccinated_previous.date,
+        'value': people_fully_vaccinated_previous.people_fully_vaccinated
       },
     'daily_vaccinations' :
       {
-        'date' : daily_vaccination_history[daily_vaccination_history.length-2].date,
-        'value': daily_vaccination_history[daily_vaccination_history.length-2].daily_vaccinations
+        'date' : daily_vaccination_previous.date,
+        'value': daily_vaccination_previous.daily_vaccinations
       },
     'daily_vaccinations_per_million':
       {
-        'date' : daily_vaccinations_per_million_history[daily_vaccinations_per_million_history.length-2].date,
-        'value': daily_vaccinations_per_million_history[daily_vaccinations_per_million_history.length-2].daily_vaccinations_per_million
+        'date' : daily_vaccinations_per_million_previous.date,
+        'value': daily_vaccinations_per_million_previous.daily_vaccinations_per_million
       }
   }
 
@@ -242,13 +271,13 @@ function drawProgressbar(){
   let percentage = Math.floor(progress*100000)/1000;
 
   fill(0,0,80)
-  rect(width*0.065, height/2-70, width*0.87,140);
+  rect(width*0.065, height/2-71, width*0.87,156);
   textAlign(LEFT);
   noStroke();
   fill(48);
-  rect(width/10, height/2-15, width*0.8, 20);
+  rect(width/10, height/2-15, width*0.8, 14);
   fill(0,180,255);
-  rect(width/10, height/2-15, width*0.8*progress, 20);
+  rect(width/10, height/2-15, width*0.8*progress, 15);
 
 
   fill(ui_eulabutton_color[0],ui_eulabutton_color[1],ui_eulabutton_color[2]);
@@ -270,11 +299,18 @@ function drawProgressbar(){
   text( "(2回接種: "+ latest_value.people_fully_vaccinated.value.toLocaleString() +"人/ " + population.toLocaleString()+"人)", width/10, height/2-28 )
 
   let str_speed = speed.toLocaleString()+ "回/日";
-  let str_speed_per_million = speed_per_million.toLocaleString();+"回/日,100万人";
+  let str_speed_per_million = speed_per_million.toLocaleString()+"回/日";
+
+  /*
   if(country_code === "JPN"){
     str_speed = str_speed_per_million = "調整中";
   }
-  text("直近7日平均: " + str_speed+ " (対人口比 "+str_speed_per_million+")", width/10, height/2+24);
+  */
+
+  let str_moving_avarave_label='';
+  str_moving_avarave_label = daily_vaccination_moving_avarage_begin+" 〜 "+daily_vaccination_moving_avarage_end;
+  text("平均速度: " + str_speed+ " (人口比 "+str_speed_per_million+")", width/10, height/2+20);
+  text("平均対象期間: " + str_moving_avarave_label, width/10, height/2+36);
 
 
   drawMilestone();
@@ -283,6 +319,7 @@ function drawProgressbar(){
   fill(32);
   textAlign(CENTER);
   text("last update:"+ last_update, width/2, height/2+100);
+  text("速度計算基準日:"+ latest_value.daily_vaccinations.date, width/2, height/2+120);
 
 
 
@@ -321,6 +358,14 @@ function uiCreateImportantNotificationButton(){
   let ui_important_notification_button_container = createDiv('');
   ui_important_notification_button_container.addClass('importantNotificationButton');
   ui_important_notification_button = createButton('重要なお知らせ');
+  ui_important_notification_button.mousePressed(function(){ location.href="note.html"; });
+  ui_important_notification_button_container.child(ui_important_notification_button);
+}
+
+function uiCreateNormalNotificationButton(){
+  let ui_important_notification_button_container = createDiv('');
+  ui_important_notification_button_container.addClass('normalNotificationButton');
+  ui_important_notification_button = createButton('速度の算出について');
   ui_important_notification_button.mousePressed(function(){ location.href="note.html"; });
   ui_important_notification_button_container.child(ui_important_notification_button);
 }
@@ -427,16 +472,16 @@ function uiCreateMaxValue(){
     let day = day_jp[( new Date(date) ).getDay()];
 
 
-    let ui_maxValue = createDiv('<p><strong>最多接種記録</strong><br/>(月曜除く) '+date_ex+'('+day_ex+') '+ value_ex.toLocaleString()+'回<br/>(月曜含む) '+date+'('+day+') '+ value.toLocaleString()+'回<p>');
+    let ui_maxValue = createDiv('<p><strong>最多接種報告記録</strong><br/>(月曜除く) '+date_ex+'('+day_ex+') '+ value_ex.toLocaleString()+'回<br/>(月曜含む) '+date+'('+day+') '+ value.toLocaleString()+'回<p>');
     ui_maxValue.addClass('max-value');
   }
 }
 
 function uiCreateLatestTable(){
-  let ui_latestTableDiv = createDiv('<p><strong>最近の接種履歴</strong><br/>');
+  let ui_latestTableDiv = createDiv('<p><strong>最近の接種報告履歴</strong><br/>');
   ui_latestTableDiv.addClass('latest-table');
   let ui_table = createElement('table');
-  let limit = (daily_vaccinations_raw_history.length<=7)? daily_vaccinations_raw_history.length : 7;
+  let limit = (daily_vaccinations_raw_history.length<=7)? daily_vaccinations_raw_history.length : 10;
   for(let i=0; i<limit; i++){
     let obj = daily_vaccinations_raw_history[daily_vaccinations_raw_history.length-1-i];
     let date = obj.date;
@@ -454,13 +499,12 @@ function uiCriateRelatedLink(){
 
 function createUI(){
   if(country_code === "JPN"){
-    uiCreateImportantNotificationButton();
+    uiCreateNormalNotificationButton();
   }
+
   uiCreateSaveButton();
-  if(country_code !== "JPN"){
-    uiCreateMaxValue();
-    uiCreateLatestTable();
-  }
+  uiCreateMaxValue();
+  uiCreateLatestTable();
   uiCreateSelect();
   uiCriateRelatedLink();
 }

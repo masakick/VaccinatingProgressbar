@@ -14,6 +14,25 @@ p.note{
   padding:0.75rem;
   margin: 1rem 0 1rem 0;
 }
+
+article p.image{
+  text-align: center;
+}
+article p.image img{
+  width: 97%;
+}
+
+h1.sectionTitle{
+  background: #eeeeff;
+}
+
+h2.articleTitle{
+  font-size: 1.2rem;
+}
+article h3{
+  font-size: 1.0rem;
+}
+
 div{
   text-align: center;
 }
@@ -25,7 +44,7 @@ canvas {
   margin:1em auto;
 position:relative;
 }
-.saveButton,.importantNotificationButton{
+.saveButton,.importantNotificationButton,.normalNotificationButton{
   width:10rem;
   margin:1em auto;
   position:relative;
@@ -37,6 +56,9 @@ position:relative;
   background:#f00;
 }
 
+.normalNotificationButton button{
+  background:#ffd;
+}
 
 select,button{
   -webkit-appearance:none;
