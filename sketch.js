@@ -84,12 +84,12 @@ function drawMilestone(){
     let plus = (difference>0)? '+' : '';
     let str_remainingDays = remainingDays.toLocaleString() + "日";
     let str_difference = plus+ difference +"日";
-    /*
-    if(country_code=="JPN"){
-      str_remainingDays = str_difference = "調整中";
-    }
-    */
-    let textStr = item.label + "まで " + str_remainingDays+" (前日差 "+str_difference+")";
+    let last_update_y = parseInt(last_update.split("-")[0]);
+    let last_update_m = parseInt(last_update.split("-")[1]);
+    let last_update_d = parseInt(last_update.split("-")[2]);
+    let dt = new Date(last_update_y, last_update_m -1, last_update_d, 0,0,0);
+    dt.setDate(dt.getDate() + remainingDays);
+    let textStr = item.label + "まで " + str_remainingDays+" (前日差 "+str_difference+"／"+ dt.getFullYear()+"年"+ (dt.getMonth()+1)+"月"+dt.getDate()+"日頃)";
     text(textStr, annotation_x, annotation_y);
     text_w += textWidth(textStr);
   });
@@ -300,13 +300,6 @@ function drawProgressbar(){
 
   let str_speed = speed.toLocaleString()+ "回/日";
   let str_speed_per_million = speed_per_million.toLocaleString()+"回/日";
-
-  /*
-  if(country_code === "JPN"){
-    str_speed = str_speed_per_million = "調整中";
-  }
-  */
-
   let str_moving_avarave_label='';
   str_moving_avarave_label = daily_vaccination_moving_avarage_begin+" 〜 "+daily_vaccination_moving_avarage_end;
   text("平均速度: " + str_speed+ " (人口比 "+str_speed_per_million+")", width/10, height/2+20);
@@ -320,9 +313,6 @@ function drawProgressbar(){
   textAlign(CENTER);
   text("last update:"+ last_update, width/2, height/2+100);
   text("速度計算基準日:"+ latest_value.daily_vaccinations.date, width/2, height/2+120);
-
-
-
 }
 
 function mouseMoved(){
