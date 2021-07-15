@@ -471,7 +471,7 @@ function uiCreateLatestTable(){
   let ui_latestTableDiv = createDiv('<p><strong>最近の接種報告履歴</strong><br/>');
   ui_latestTableDiv.addClass('latest-table');
   let ui_table = createElement('table');
-  let limit = (daily_vaccinations_raw_history.length<=7)? daily_vaccinations_raw_history.length : 10;
+  let limit = (daily_vaccinations_raw_history.length<=10)? daily_vaccinations_raw_history.length : 10;
   for(let i=0; i<limit; i++){
     let obj = daily_vaccinations_raw_history[daily_vaccinations_raw_history.length-1-i];
     let date = obj.date;
