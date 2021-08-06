@@ -463,7 +463,7 @@ function uiCreateMaxValue(){
 
     let ui_maxValue;
     if(country_code === "JPN"){
-      ui_maxValue = createDiv('<p><strong>1日の最多接種記録(職域接種を含まない)</strong><br/>'+date_ex+'('+day_ex+') '+ value_ex.toLocaleString()+'回<p>');
+      ui_maxValue = createDiv('<p><strong>1日の最多接種記録</strong><br/>(職域接種を含まない)<br>'+date_ex+'('+day_ex+') '+ value_ex.toLocaleString()+'回<p>');
     }
     else{
       ui_maxValue = createDiv('<p><strong>1日の最多接種記録</strong><br/>'+date+'('+day+') '+ value.toLocaleString()+'回<p>');
