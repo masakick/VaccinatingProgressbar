@@ -10,10 +10,10 @@ let daily_vaccination_history;
 let daily_vaccinations_per_million_history;
 let daily_vaccinations_raw_history;
 let daily_vaccinations_raw_history_sorted;
-let daily_vaccinations_raw_history_exceptmonday;
-let daily_vaccinations_raw_history_exceptmonday_sorted;
+let daily_vaccinations_raw_history_exceptsunday;
+let daily_vaccinations_raw_history_exceptsunday_sorted;
 let daily_vaccinations_raw_max;
-let daily_vaccinations_raw_max_exceptmonday;
+let daily_vaccinations_raw_max_exceptsunday;
 let latest_value;
 let previous_valuse;
 let last_update;
@@ -157,19 +157,19 @@ function gotData(data) {
   daily_vaccinations_raw_history_sorted.sort(compare_daily_vaccinations_raw);
   daily_vaccinations_raw_max = daily_vaccinations_raw_history_sorted[0];
 
-  //remove Monday
-  daily_vaccinations_raw_history_exceptmonday = country_data.filter(function(item, index){
+  //remove Sunday
+  daily_vaccinations_raw_history_exceptsunday = country_data.filter(function(item, index){
     if(item.daily_vaccinations_raw){
       let date = new Date(item.date);
-      if( date.getDay() != 1){
+      if( date.getDay() != 0){
         return true;
       }
     }
   });
 
-  daily_vaccinations_raw_history_exceptmonday_sorted = daily_vaccinations_raw_history_exceptmonday.slice();
-  daily_vaccinations_raw_history_exceptmonday_sorted.sort(compare_daily_vaccinations_raw);
-  daily_vaccinations_raw_max_exceptmonday = daily_vaccinations_raw_history_exceptmonday_sorted[0];
+  daily_vaccinations_raw_history_exceptsunday_sorted = daily_vaccinations_raw_history_exceptsunday.slice();
+  daily_vaccinations_raw_history_exceptsunday_sorted.sort(compare_daily_vaccinations_raw);
+  daily_vaccinations_raw_max_exceptsunday = daily_vaccinations_raw_history_exceptsunday_sorted[0];
 
   daily_vaccinations_per_million_history = country_data.filter(function(item, index){
     if(item.daily_vaccinations_per_million) return true;
@@ -453,22 +453,33 @@ function uiCreateShareButton(){
 
 function uiCreateMaxValue(){
   if(daily_vaccinations_raw_history.length>0){
-    let date_ex = daily_vaccinations_raw_max_exceptmonday.date;
-    let value_ex = daily_vaccinations_raw_max_exceptmonday.daily_vaccinations_raw;
+    let date_ex = daily_vaccinations_raw_max_exceptsunday.date;
+    let value_ex = daily_vaccinations_raw_max_exceptsunday.daily_vaccinations_raw;
     let day_ex = day_jp[( new Date(date_ex) ).getDay()];
 
     let date = daily_vaccinations_raw_max.date;
     let value = daily_vaccinations_raw_max.daily_vaccinations_raw;
     let day = day_jp[( new Date(date) ).getDay()];
 
-
-    let ui_maxValue = createDiv('<p><strong>最多接種報告記録</strong><br/>(月曜除く) '+date_ex+'('+day_ex+') '+ value_ex.toLocaleString()+'回<br/>(月曜含む) '+date+'('+day+') '+ value.toLocaleString()+'回<p>');
+    let ui_maxValue;
+    if(country_code === "JPN"){
+      ui_maxValue = createDiv('<p><strong>1日の最多接種記録(職域接種を含まない)</strong><br/>'+date_ex+'('+day_ex+') '+ value_ex.toLocaleString()+'回<p>');
+    }
+    else{
+      ui_maxValue = createDiv('<p><strong>1日の最多接種記録</strong><br/>'+date+'('+day+') '+ value.toLocaleString()+'回<p>');
+    }
     ui_maxValue.addClass('max-value');
   }
 }
 
 function uiCreateLatestTable(){
-  let ui_latestTableDiv = createDiv('<p><strong>最近の接種報告履歴</strong><br/>');
+  let ui_latestTableDiv;
+  if(country_code === "JPN"){
+    ui_latestTableDiv = createDiv('<p><strong>最近の接種報告履歴</strong><br/>（毎週水曜日以降は、直前の日曜日に当日の一般接種職回数と一週間の職域接種（月〜日）集計回数の合算値を計上。ただし8月1日（日）はそれ以前の全期間の職域接種集計回数との合算）');
+  }
+  else{
+    ui_latestTableDiv = createDiv('<p><strong>最近の接種報告履歴</strong><br/>');
+  }
   ui_latestTableDiv.addClass('latest-table');
   let ui_table = createElement('table');
   let limit = (daily_vaccinations_raw_history.length<=10)? daily_vaccinations_raw_history.length : 10;
